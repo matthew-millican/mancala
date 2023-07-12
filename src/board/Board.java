@@ -47,8 +47,6 @@ public class Board {
 
         this.key = sb.toString();
 
-        System.out.println(this.key);
-
     }
 
     public Board() {
@@ -56,6 +54,9 @@ public class Board {
         this.playerRow = new Row(DEFAULT_STONES);
 
         this.computerRow = new Row(DEFAULT_STONES);
+
+
+        evaluateKey();
 
 
         next = null;

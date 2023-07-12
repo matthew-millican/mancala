@@ -3,11 +3,15 @@ package game;
 import board.Board;
 import board.Pit;
 import board.Store;
+import computer.Computer;
 
 public class Mancala {
 
     // the main mancala game board
     private static Board gameBoard;
+
+
+    private static Computer computer;
 
 
     public static void main(String[] args) {
@@ -16,6 +20,10 @@ public class Mancala {
         gameBoard = new Board();
 
         printBoard();
+
+        computer = new Computer(gameBoard);
+
+
 
     }
 
