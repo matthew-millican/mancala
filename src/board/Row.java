@@ -20,6 +20,24 @@ public class Row {
     }
 
 
+    public boolean isEmpty() {
+        boolean isEmpty = true;
+
+        Pit curr = this.pit;
+
+        while (curr != null) {
+
+            isEmpty = isEmpty && curr.getStoneCount() == 0;
+
+
+            curr = curr.next;
+        }
+
+        return isEmpty;
+
+    }
+
+
     /**
      * Initialise the consecutive pits as a linked list structure.
      * @param startingCount number of stones to go in each pit.

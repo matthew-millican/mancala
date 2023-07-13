@@ -5,6 +5,10 @@ import board.Pit;
 import board.Store;
 import computer.Computer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Mancala {
 
     // the main mancala game board
@@ -14,14 +18,37 @@ public class Mancala {
     private static Computer computer;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
 
 
         gameBoard = new Board();
 
-        printBoard();
-
         computer = new Computer(gameBoard);
+
+
+        boolean gameOver = false;
+
+
+        while (!gameOver) {
+            
+            printBoard();
+            System.out.println("Player turn:");
+
+            // player move
+
+            String move = reader.readLine();
+
+            // computer move
+
+            computer.reset(gameBoard);
+
+            gameOver = gameBoard.isGameOver();
+
+
+        }
 
 
 

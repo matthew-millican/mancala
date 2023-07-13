@@ -25,6 +25,10 @@ public class Board {
         return this.key;
     }
 
+    public boolean isGameOver() {
+        return this.playerRow.isEmpty() || this.computerRow.isEmpty();
+    }
+
     public void evaluateKey() {
         // use pit stone counts and store to create string key
 
