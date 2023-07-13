@@ -19,12 +19,14 @@ public class Row {
         initPits(startingCount);
     }
 
-
+    /**
+     * Check if the row of pits does not contain anymore pits
+     * @return true or false
+     */
     public boolean isEmpty() {
         boolean isEmpty = true;
 
         Pit curr = this.pit;
-
         while (curr != null) {
 
             isEmpty = isEmpty && curr.getStoneCount() == 0;

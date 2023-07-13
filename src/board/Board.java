@@ -1,5 +1,7 @@
 package board;
 
+import game.Mancala;
+
 public class Board {
 
 
@@ -7,6 +9,10 @@ public class Board {
     public static final int PITS = 6;
 
     public static final int DEFAULT_STONES = 4;
+
+    public static final int PLAYER = 1;
+
+    public static final int COMPUTER = 2;
 
 
     // logical separation of rows
@@ -25,6 +31,10 @@ public class Board {
         return this.key;
     }
 
+    /**
+     * The game is finished when one or both of the players pits are empty
+     * @return true or false
+     */
     public boolean isGameOver() {
         return this.playerRow.isEmpty() || this.computerRow.isEmpty();
     }
@@ -51,6 +61,33 @@ public class Board {
 
         this.key = sb.toString();
 
+    }
+
+    public int pickupSeeds(Row row, int index) {
+
+        Pit pit = row.pit;
+        int count = 1;
+        while (pit != null) {
+            if (index == count) {
+                return pit.empty();
+            }
+            pit = pit.next;
+        }
+
+        return Mancala.ERR;
+    }
+
+
+    public void makeMove(int turn, int index) {
+
+        if (turn == PLAYER) {
+
+            int seeds = pickupSeeds(this.playerRow, index);
+        }
+        else if (turn == COMPUTER) {
+
+            int seeds = pickupSeeds(this.computerRow, index);
+        }
     }
 
     public Board() {

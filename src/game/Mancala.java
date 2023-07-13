@@ -18,6 +18,9 @@ public class Mancala {
     private static Computer computer;
 
 
+    public static final int ERR = -1;
+
+
     public static void main(String[] args) throws IOException {
 
         BufferedReader reader = new BufferedReader(
@@ -41,6 +44,14 @@ public class Mancala {
 
             String move = reader.readLine();
 
+            int index = validateMove(move);
+
+            if (index == ERR) {
+                System.out.println("Invalid pit. Pits are denoted between 1 and 6. ");
+                
+                continue;
+            }
+
             // computer move
 
             computer.reset(gameBoard);
@@ -50,6 +61,28 @@ public class Mancala {
 
         }
 
+        reader.close();
+
+
+
+    }
+
+
+    private static int validateMove(String move) {
+
+        try {
+            int index = Integer.parseInt(move);
+
+            if (index < 1 || index > 6) {
+                throw new NumberFormatException();
+            }
+            return index;
+        }
+        catch(NumberFormatException nfe) {
+
+            return ERR;
+
+        }
 
 
     }
