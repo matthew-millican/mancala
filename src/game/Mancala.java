@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import static board.Board.PLAYER;
+
 public class Mancala {
 
     // the main mancala game board
@@ -47,8 +49,13 @@ public class Mancala {
             int index = validateMove(move);
 
             if (index == ERR) {
-                System.out.println("Invalid pit. Pits are denoted between 1 and 6. ");
-                
+                System.out.println("Invalid pit. Pits are denoted as between 1 and 6. ");
+
+                // still player move
+                continue;
+            }
+
+            if (!(gameBoard.makeMove(PLAYER, index))) {
                 continue;
             }
 
@@ -95,8 +102,6 @@ public class Mancala {
 
         // computer row
 
-        Pit pit = gameBoard.computerRow.pit;
-
         // align with tabs
         System.out.print("\t");
 
@@ -116,10 +121,16 @@ public class Mancala {
         System.out.print("\t");
 
         // print consecutive pits
-        while (pit != null) {
+
+        index = 6;
+        Pit pit;
+        while (index > 0) {
+            // awkard and inefficient, but this formats the computer row correctly
+            pit = gameBoard.computerRow.getPit(index);
             System.out.print(pit.getStoneCount() + "\t");
-            pit = pit.next;
+            index--;
         }
+
         System.out.println();
 
         // print stores

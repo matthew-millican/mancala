@@ -63,6 +63,12 @@ public class Board {
 
     }
 
+    /**
+     * Pick up seeds from a given pit.
+     * @param row current row
+     * @param index pit index to empty
+     * @return the number of seeds in that pit
+     */
     public int pickupSeeds(Row row, int index) {
 
         Pit pit = row.pit;
@@ -71,35 +77,110 @@ public class Board {
             if (index == count) {
                 return pit.empty();
             }
+            count++;
             pit = pit.next;
         }
 
         return Mancala.ERR;
     }
 
+    public void sowSeeds(int turn, int index, int seeds) {
 
-    public void makeMove(int turn, int index) {
+        Row row = turn == PLAYER ? this.playerRow : this.computerRow;
+        Row opponent = turn == PLAYER ? this.computerRow : this.playerRow;
+
+
+        // monitors which row of seeds we're sowing into
+        int control = 0;
+
+        Pit pit = row.pit;
+        Pit opPit = opponent.pit;
+
+        // move to correct index (+1 of emptied pit)
+        int count = 1;
+        while (pit != null) {
+            if (index == count) {
+                // move one more time
+                pit = pit.next;
+                break;
+            }
+            pit = pit.next;
+            count++;
+        }
+        // sow seeds in consecutive pits
+
+        while (seeds > 0) {
+            // current person's row
+            if (control == 0) {
+                if (pit != null) {
+                    pit.increment();
+                    pit = pit.next;
+                }
+                else {
+                    // reached the end of the row
+                    row.store.increment();
+
+                    // now we circle round to the opponent's row so flip the control
+                    control = 1;
+
+                    // reset pit
+                    pit = row.pit;
+                }
+            }
+            else {
+                if (opPit != null) {
+                    opPit.increment();
+                    opPit = opPit.next;
+                }
+                else {
+                    // flip control
+                    control = 0;
+
+                    // reset pit
+                    opPit = opponent.pit;
+                }
+            }
+
+
+            seeds--;
+        }
+    }
+
+    /**
+     * Perform a single move by emptying a pit and sowing into consecutive pits.
+     * @param turn defines who's turn it is.
+     * @param index index of the pit to be emptied.
+     */
+    public boolean makeMove(int turn, int index) {
 
         if (turn == PLAYER) {
-
+            // collect seeds from a pit and sow into the consecutive pits
             int seeds = pickupSeeds(this.playerRow, index);
+
+            if (seeds == 0) {
+                System.out.println("Invalid pit. That pit is empty.");
+                return false;
+            }
+            sowSeeds(PLAYER, index, seeds);
         }
         else if (turn == COMPUTER) {
-
             int seeds = pickupSeeds(this.computerRow, index);
+
+            if (seeds == 0) {
+                return false;
+            }
+            sowSeeds(COMPUTER, index, seeds);
         }
+
+        return true;
     }
 
     public Board() {
 
         this.playerRow = new Row(DEFAULT_STONES);
-
         this.computerRow = new Row(DEFAULT_STONES);
 
-
         evaluateKey();
-
-
         next = null;
     }
 

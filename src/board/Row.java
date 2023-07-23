@@ -39,6 +39,28 @@ public class Row {
 
     }
 
+    /**
+     * Return the pit denoted at the specified index.s
+     * @param index index of the pit.
+     * @return pit
+     */
+    public Pit getPit(int index) {
+
+        int count = 1;
+        Pit pit = this.pit;
+
+        while (pit != null) {
+
+            if (count == index) {
+                return pit;
+            }
+            pit = pit.next;
+            count++;
+        }
+
+        return null;
+    }
+
 
     /**
      * Initialise the consecutive pits as a linked list structure.
