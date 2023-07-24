@@ -21,6 +21,10 @@ public class Store {
         this.score++;
     }
 
+    public void add(int seeds) {
+        this.score = this.score + seeds;
+    }
+
 
     public Store() {
         this.score = 0;

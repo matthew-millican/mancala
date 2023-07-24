@@ -1,6 +1,7 @@
 package board;
 
 import game.Mancala;
+import game.Response;
 
 public class Board {
 
@@ -64,6 +65,16 @@ public class Board {
     }
 
     /**
+     * Transform the index in one row to the index of the opposite row.
+     * @param index
+     * @return
+     */
+    public int transformIndex(int index) {
+
+        return (Math.abs(PITS - index) + 1);
+    }
+
+    /**
      * Pick up seeds from a given pit.
      * @param row current row
      * @param index pit index to empty
@@ -72,19 +83,24 @@ public class Board {
     public int pickupSeeds(Row row, int index) {
 
         Pit pit = row.pit;
-        int count = 1;
         while (pit != null) {
-            if (index == count) {
+            if (index == pit.index) {
                 return pit.empty();
             }
-            count++;
             pit = pit.next;
         }
 
         return Mancala.ERR;
     }
 
-    public void sowSeeds(int turn, int index, int seeds) {
+    /**
+     * Sow seeds picked up from a pit in the proceeding pits next to it
+     * @param turn defines which player of the game is making a move
+     * @param index index of the emptied pit
+     * @param seeds number of seeds picked up
+     * @return
+     */
+    public Response sowSeeds(int turn, int index, int seeds) {
 
         Row row = turn == PLAYER ? this.playerRow : this.computerRow;
         Row opponent = turn == PLAYER ? this.computerRow : this.playerRow;
@@ -109,16 +125,29 @@ public class Board {
         }
         // sow seeds in consecutive pits
 
+        boolean lastSeed;
         while (seeds > 0) {
+            lastSeed = seeds == 1;
             // current person's row
             if (control == 0) {
                 if (pit != null) {
-                    pit.increment();
+                    // place last seed in an empty pit
+                    if (pit.increment() && lastSeed) {
+                        // capture opposite seeds from opponent
+                        int capturedSeeds = pickupSeeds(opponent, transformIndex(pit.index));
+                        row.store.add(capturedSeeds);
+                        return new Response("Well done. You stole some seeds.", false);
+                    }
                     pit = pit.next;
                 }
                 else {
                     // reached the end of the row
                     row.store.increment();
+
+                    // detect an extra go
+                    if (lastSeed) {
+                        return new Response("Well done. You can go again.", true);
+                    }
 
                     // now we circle round to the opponent's row so flip the control
                     control = 1;
@@ -144,6 +173,8 @@ public class Board {
 
             seeds--;
         }
+
+        return new Response("", false);
     }
 
     /**
@@ -151,28 +182,21 @@ public class Board {
      * @param turn defines who's turn it is.
      * @param index index of the pit to be emptied.
      */
-    public boolean makeMove(int turn, int index) {
+    public Response makeMove(int turn, int index) {
 
+        // player turn
         if (turn == PLAYER) {
-            // collect seeds from a pit and sow into the consecutive pits
             int seeds = pickupSeeds(this.playerRow, index);
 
             if (seeds == 0) {
-                System.out.println("Invalid pit. That pit is empty.");
-                return false;
+                return new Response("Invalid pit. That pit is empty.", true);
             }
-            sowSeeds(PLAYER, index, seeds);
+            // TODO: seeds == -1 something has gone wrong with the game.
+            return sowSeeds(PLAYER, index, seeds);
         }
-        else if (turn == COMPUTER) {
-            int seeds = pickupSeeds(this.computerRow, index);
-
-            if (seeds == 0) {
-                return false;
-            }
-            sowSeeds(COMPUTER, index, seeds);
-        }
-
-        return true;
+        // computer turn
+        int seeds = pickupSeeds(this.computerRow, index);
+        return sowSeeds(COMPUTER, index, seeds);
     }
 
     public Board() {

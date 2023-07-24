@@ -6,6 +6,9 @@ public class Pit {
     // number of stones in the pit
     private int stoneCount;
 
+    // index of the pit
+    public final int index;
+
     // stores the next consecutive pit
     public Pit next;
 
@@ -33,16 +36,20 @@ public class Pit {
     /**
      * Add a stone to the pit.
      */
-    public void increment() {
+    public boolean increment() {
+
+        boolean empty = this.stoneCount == 0;
 
         this.stoneCount++;
+
+        return empty;
     }
 
 
-    public Pit(int startingCount) {
+    public Pit(int startingCount, int index) {
 
         this.stoneCount = startingCount;
-
+        this.index = index;
         this.next = null;
     }
 }

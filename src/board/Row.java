@@ -67,12 +67,12 @@ public class Row {
      * @param startingCount number of stones to go in each pit.
      */
     private void initPits(int startingCount) {
-        this.pit = new Pit(startingCount);
+        this.pit = new Pit(startingCount, 1);
 
         Pit curr = this.pit;
 
         for (int i = 1; i < Board.PITS; i++) {
-            curr.next = new Pit(startingCount);
+            curr.next = new Pit(startingCount, i+1);
 
             curr = curr.next;
         }

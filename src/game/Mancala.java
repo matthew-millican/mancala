@@ -54,8 +54,9 @@ public class Mancala {
                 // still player move
                 continue;
             }
-
-            if (!(gameBoard.makeMove(PLAYER, index))) {
+            Response res = gameBoard.makeMove(PLAYER, index);
+            System.out.println(res.getMessage());
+            if (res.getFlag()) {
                 continue;
             }
 
